@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hyderabad Estate — VIP Real Estate Platform</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body>
+  <!-- AUTH GATE — Must login/register first -->
+  <div class="auth-gate" id="authGate">
+    <div class="auth-gate-bg"></div>
+    <div class="auth-gate-content">
+      <div class="auth-gate-logo">
+        <span class="auth-gate-icon">🏙️</span>
+        <h1>Hyderabad Estate</h1>
+        <p class="auth-gate-sub">حیدرآباد اسٹیٹ · VIP Real Estate Platform</p>
+      </div>
+      <div class="auth-gate-box">
+        <!-- Login Form -->
+        <div id="gateLoginForm">
+          <h2>Welcome Back</h2>
+          <p class="auth-gate-desc">Login to access premium properties</p>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="gateLoginEmail" class="form-input" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="gateLoginPassword" class="form-input" placeholder="••••••••" onkeypress="if(event.key==='Enter')doGateLogin()" />
+          </div>
+          <div id="gateLoginError" class="form-error" style="display:none"></div>
+          <button class="btn-primary full-width" onclick="doGateLogin()">Login →</button>
+          <p class="auth-switch">Don't have an account? <a href="#" onclick="showGateRegister()">Create Account</a></p>
+        </div>
+        <!-- Register Form -->
+        <div id="gateRegisterForm" style="display:none">
+          <h2>Create Account</h2>
+          <p class="auth-gate-desc">Join Hyderabad Estate VIP Platform</p>
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" id="gateRegName" class="form-input" placeholder="Muhammad Ali" />
+          </div>
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="gateRegEmail" class="form-input" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Phone (Optional)</label>
+            <input type="text" id="gateRegPhone" class="form-input" placeholder="03XX-XXXXXXX" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="gateRegPassword" class="form-input" placeholder="••••••••" onkeypress="if(event.key==='Enter')doGateRegister()" />
+          </div>
+          <div id="gateRegError" class="form-error" style="display:none"></div>
+          <button class="btn-primary full-width" onclick="doGateRegister()">Create Account →</button>
+          <p class="auth-switch">Already have an account? <a href="#" onclick="showGateLogin()">Login</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT (hidden until auth) -->
+  <div id="mainContent" style="display:none">
+  <!-- 3D ANIMATED BACKGROUND -->
+  <div id="bg3d"></div>
+
+  <!-- IMPORTANT NOTICE BANNER -->
+  <div class="notice-banner" id="noticeBanner">
+    <div class="notice-inner">
+      <span class="notice-icon">📢</span>
+      <div class="notice-text">
+        <strong>IMPORTANT NOTICE — اہم اطلاع</strong>
+        &nbsp;|&nbsp;
+        Hyderabad Estate is Hyderabad's #1 verified real estate platform — 20 Buildings, 62 Flats, 24 Housing Societies, 38 Brokers.
+        &nbsp;|&nbsp;
+        <strong>📞 VIP Broker:</strong> Zahid Hussain Al Habib Real Estate
+        <div class="notice-btn-row">
+          <a href="tel:03013501356" class="notice-btn-call">📞 Call Now</a>
+          <a href="https://wa.me/923013501356?text=Hello%2C%20I%20am%20interested%20in%20properties%20in%20Hyderabad" target="_blank" class="notice-btn-wa">💬 WhatsApp</a>
+          <span class="notice-num">03013501356</span>
+        </div>
+        <span class="notice-urdu">پلاٹ یا فلیٹ خریدنے کے لیے ابھی ہمارے بروکر سے رابطہ کریں۔</span>
+      </div>
+      <button class="notice-close" onclick="document.getElementById('noticeBanner').style.display='none'">✕</button>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <span class="logo-icon">🏙️</span>
+        <div>
+          <div class="logo-text">Hyderabad Estate</div>
+          <div class="logo-sub">حیدرآباد اسٹیٹ · VIP Platform</div>
+        </div>
+      </div>
+      <div class="nav-links" id="navLinks">
+        <a href="#" onclick="showSection('home')" class="nav-link active">Home</a>
+        <a href="#" onclick="showSection('societies')" class="nav-link">🏢 Buildings</a>
+        <a href="#" onclick="showSection('flats')" class="nav-link">🏠 Flats</a>
+        <a href="#" onclick="showSection('housing')" class="nav-link">🏘️ Housing</a>
+        <a href="#" onclick="showSection('brokers')" class="nav-link">👤 Brokers</a>
+        <a href="#" onclick="showSection('map')" class="nav-link">🗺️ Map</a>
+      </div>
+      <div class="nav-auth" id="navAuth">
+        <button class="btn-register" onclick="openModal('register')">Register</button>
+        <button class="btn-login" onclick="openModal('login')">Login</button>
+      </div>
+      <div class="nav-user" id="navUser" style="display:none">
+        <div class="user-avatar" id="userAvatar">U</div>
+        <span id="userName"></span>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+      <button class="hamburger" onclick="toggleMenu()">☰</button>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero" id="sectionHome">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="vip-badge">⭐ VIP PLATFORM ⭐</div>
+      <h1 class="hero-title">Find Your Dream<br><span class="gold">Apartment in Hyderabad</span></h1>
+      <p class="hero-sub">حیدرآباد کے بہترین اپارٹمنٹس — Verified Properties, Trusted Brokers</p>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-n" id="statSocieties">20</div><div class="stat-l">Buildings</div></div>
+        <div class="stat"><div class="stat-n" id="statBrokers">38</div><div class="stat-l">Brokers</div></div>
+        <div class="stat"><div class="stat-n" id="statListings">60+</div><div class="stat-l">Listings</div></div>
+        <div class="stat"><div class="stat-n">5⭐</div><div class="stat-l">Rated</div></div>
+      </div>
+      <div class="hero-search">
+        <select id="hsType" class="hs-select">
+          <option value="">Rent or Sale?</option>
+          <option value="rent">Rent</option>
+          <option value="sale">Sale</option>
+        </select>
+        <select id="hsBeds" class="hs-select">
+          <option value="">Bedrooms</option>
+          <option value="2">2 Bed</option>
+          <option value="3">3 Bed</option>
+        </select>
+        <button class="btn-search" onclick="doSearch()">🔍 Search Flats</button>
+      </div>
+    </div>
+    <!-- Rating ticker -->
+    <div class="rating-ticker">
+      <div class="ticker-inner" id="ratingTicker"></div>
+    </div>
+
+    <!-- IMPORTANT NOTICE SECTION -->
+    <div class="important-notice" id="importantNotice">
+      <div class="important-notice-box">
+        <div class="important-notice-head">
+          <span class="important-notice-icon">📢</span>
+          <h3>Important Notice</h3>
+        </div>
+        <div class="important-notice-body">
+          <div class="notice-point">
+            <span class="notice-point-icon">🏠</span>
+            <div>
+              <strong>House Availability:</strong>
+              Houses are currently unavailable and marked as <em>"Coming Soon"</em>. They will be available shortly.
+            </div>
+          </div>
+          <div class="notice-point">
+            <span class="notice-point-icon">💰</span>
+            <div>
+              <strong>Dynamic Pricing:</strong>
+              Rates for plots and flats (for both rent and sale) are subject to change continuously (daily or monthly). For exact and up-to-date prices, please contact our broker directly.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-brand">
+        <div class="logo-text" style="font-size:1.4rem">🏙️ Hyderabad Estate</div>
+        <p>حیدرآباد کا سب سے معتبر ریئل اسٹیٹ پلیٹ فارم</p>
+        <p>Zahid Hussain Al Habib Real Estate</p>
+        <div class="footer-btn-row">
+          <a href="tel:03013501356" class="footer-btn-call">📞 Call</a>
+          <a href="https://wa.me/923013501356?text=Hello%2C%20I%20am%20interested%20in%20properties%20in%20Hyderabad" target="_blank" class="footer-btn-wa">💬 WhatsApp</a>
+          <span class="footer-num">03013501356</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Quick Links</h4>
+        <a href="#" onclick="showSection('societies')">🏢 Buildings</a>
+        <a href="#" onclick="showSection('flats')">🏠 Flats</a>
+        <a href="#" onclick="showSection('housing')">🏘️ Housing</a>
+        <a href="#" onclick="showSection('brokers')">👤 Brokers</a>
+        <a href="#" onclick="showSection('map')">🗺️ Map</a>
+      </div>
+      <div class="footer-contact">
+        <h4>⭐ VIP Broker</h4>
+        <p>Zahid Hussain — Al Habib Real Estate</p>
+        <p>5-Star Verified ⭐⭐⭐⭐⭐</p>
+        <div class="footer-btn-row" style="margin-top:10px">
+          <a href="tel:03013501356" class="footer-btn-call">📞 Call</a>
+          <a href="https://wa.me/923013501356?text=Hello%2C%20interested%20in%20Hyderabad%20properties" target="_blank" class="footer-btn-wa">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Hyderabad Estate VIP Platform — All Rights Reserved</p>
+      <p class="footer-powered">Powered by Uzair Zahid</p>
+    </div>
+  </footer>
+
+  </div><!-- /mainContent -->
+
+  <script>
+    // Simple demo script - Login gate
+    function doGateLogin() {
+      const email = document.getElementById('gateLoginEmail').value;
+      const password = document.getElementById('gateLoginPassword').value;
+      if (email && password) {
+        document.getElementById('authGate').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+      } else {
+        document.getElementById('gateLoginError').style.display = 'block';
+        document.getElementById('gateLoginError').textContent = 'Please fill in all fields';
+      }
+    }
+    function doGateRegister() {
+      const name = document.getElementById('gateRegName').value;
+      const email = document.getElementById('gateRegEmail').value;
+      const password = document.getElementById('gateRegPassword').value;
+      if (name && email && password) {
+        document.getElementById('authGate').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+      } else {
+        document.getElementById('gateRegError').style.display = 'block';
+        document.getElementById('gateRegError').textContent = 'Please fill in all fields';
+      }
+    }
+    function showGateRegister() { document.getElementById('gateLoginForm').style.display = 'none'; document.getElementById('gateRegisterForm').style.display = 'block'; }
+    function showGateLogin() { document.getElementById('gateLoginForm').style.display = 'block'; document.getElementById('gateRegisterForm').style.display = 'none'; }
+    function showSection(section) { console.log('Show section:', section); }
+    function toggleMenu() { document.getElementById('navLinks').classList.toggle('open'); }
+  </script>
+</body>
+</html>
